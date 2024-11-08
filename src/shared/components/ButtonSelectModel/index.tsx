@@ -1,8 +1,24 @@
-import { Select } from "@mantine/core";
+import useOllamaRequest from "@/shared/hooks/request/useOllamaRequest";
+import { Select, type SelectProps } from "@mantine/core";
 import { IconRobotFace } from "@tabler/icons-react";
 import clsx from "clsx";
 
-export default function ButtonModelSelect() {
+export type ButtonModelSelectProps = SelectProps & {};
+
+export default function ButtonModelSelect({
+  ...props
+}: ButtonModelSelectProps) {
+  const { data } = useOllamaRequest().useModels();
+
+  const formattedData = data
+    ? data.models.map((model) => {
+        return {
+          value: model.name,
+          label: model.name,
+        };
+      })
+    : [];
+
   return (
     <Select
       leftSection={
@@ -15,7 +31,7 @@ export default function ButtonModelSelect() {
       }
       fw={400}
       variant="filled"
-      data={[{ group: "Ollama", items: ["Llama 3.2:1b", "b"] }]}
+      data={[{ group: "Ollama", items: [...formattedData] }]}
       w={120}
       searchable
       radius={"xl"}
@@ -29,6 +45,7 @@ export default function ButtonModelSelect() {
           transition: "fade-up",
         },
       }}
+      {...props}
     />
   );
 }

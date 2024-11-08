@@ -13,12 +13,15 @@ export default function PageHomeConversationContent() {
   const conversation = searchConversation(id!);
 
   return (
-    <Flex direction={"column"} className={clsx(`min-h-[100vh] w-full`)}>
+    <Flex
+      direction={"column"}
+      className={clsx(`min-h-[100vh] max-h-[100vh] w-full`)}
+    >
       {/* Header */}
       <PageHomeConversationContentHeader conversation={conversation} />
 
       {/* Conversation messages */}
-      <PageHomeConversationContentMessages />
+      <PageHomeConversationContentMessages conversation={conversation} />
 
       {/* Conversation footer (action) */}
       <PageHomeConversationAction />

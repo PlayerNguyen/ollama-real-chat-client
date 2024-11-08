@@ -11,8 +11,29 @@ export type UseStoreConventionType = {
 
   addConversation: (conversation: RealChat.Conversation) => void;
   removeConversation: (index: number) => void;
+  replaceConversation: (
+    index: number,
+    conversation: RealChat.Conversation
+  ) => void;
   clearConversation: () => void;
   searchConversation: (id: string) => RealChat.Conversation | undefined;
+
+  addMessageToConversation: (
+    conversationId: string,
+    ...message: RealChat.Message[]
+  ) => RealChat.Conversation;
+
+  setModel: (conversationId: string, model: string) => void;
+  getModel: (conversationId: string) => string | undefined;
+
+  updateMessage: (
+    conversationId: string,
+    messageId: string,
+    /**
+     * The reducer which will replace the message by a new one.
+     */
+    reducer?: (message: RealChat.Message) => RealChat.Message
+  ) => void;
 };
 
 const useConversation = create<UseStoreConventionType>()(
@@ -45,6 +66,125 @@ const useConversation = create<UseStoreConventionType>()(
         const conversations = get().conversations;
 
         return conversations.find((value) => value.id === id);
+      },
+
+      replaceConversation(index: number, conversation: RealChat.Conversation) {
+        const currentConversations = get().conversations;
+
+        const updatedConversations = [
+          ...currentConversations.slice(0, index),
+          conversation,
+          ...currentConversations.slice(index + 1),
+        ];
+
+        // Update back the state
+        set((cur) => ({ ...cur, conversations: updatedConversations }));
+      },
+
+      addMessageToConversation(conversationId, ...message) {
+        const conversationList: RealChat.Conversation[] = get().conversations;
+
+        const curIndexOfConversation: number = conversationList.findIndex(
+          (_conv) => _conv.id === conversationId
+        );
+
+        let cloneOfCurConversation: RealChat.Conversation = structuredClone(
+          conversationList[curIndexOfConversation]
+        );
+
+        cloneOfCurConversation.messages.push(...message);
+
+        get().replaceConversation(
+          curIndexOfConversation,
+          cloneOfCurConversation
+        );
+
+        return cloneOfCurConversation;
+      },
+
+      setModel(conversationId, model) {
+        const conversationList: RealChat.Conversation[] = get().conversations;
+        const curIndex: number = conversationList.findIndex(
+          (conversation: RealChat.Conversation) =>
+            conversation.id === conversationId
+        );
+
+        // If not found a conversation with index
+        if (curIndex === -1) {
+          throw new Error(
+            `Cannot find a conversation with id: ${conversationId}`
+          );
+        }
+
+        let conversation: RealChat.Conversation = structuredClone(
+          conversationList[curIndex]
+        );
+        // Set the model
+        conversation.model = model;
+
+        // Replace back
+        get().replaceConversation(curIndex, conversation);
+      },
+
+      getModel(conversationId) {
+        const conversationList: RealChat.Conversation[] = get().conversations;
+        const curIndex: number = conversationList.findIndex(
+          (conversation: RealChat.Conversation) =>
+            conversation.id === conversationId
+        );
+
+        // If not found a conversation with index
+        if (curIndex === -1) {
+          throw new Error(
+            `Cannot find a conversation with id: ${conversationId}`
+          );
+        }
+
+        return conversationList[curIndex].model;
+      },
+
+      updateMessage(conversationId, messageId, reducer) {
+        // Find index
+        const conversationList: RealChat.Conversation[] = get().conversations;
+        const curConversationIndex: number = conversationList.findIndex(
+          (conversation) => conversation.id === conversationId
+        );
+
+        if (curConversationIndex === -1) {
+          throw new Error(`Cannot find the conversation id: ${conversationId}`);
+        }
+
+        const curConversation = structuredClone(
+          conversationList[curConversationIndex]
+        );
+
+        // Search for a message
+        const currentMessageIndex = curConversation.messages.findIndex(
+          (message) => message.id === messageId
+        );
+        if (currentMessageIndex === -1) {
+          throw new Error(
+            `Cannot find the message ${messageId} inside the conversation: ${conversationId}`
+          );
+        }
+        // Get current message
+        const currentMessage = curConversation.messages[currentMessageIndex];
+
+        // Find and replace index
+        curConversation.messages =
+          reducer !== undefined
+            ? [
+                ...curConversation.messages.slice(0, currentMessageIndex),
+                reducer(currentMessage!),
+                ...curConversation.messages.slice(currentMessageIndex + 1),
+              ]
+            : [
+                ...curConversation.messages.slice(0, currentMessageIndex),
+                ...curConversation.messages.slice(currentMessageIndex + 1),
+              ];
+
+        // Replace the conversation
+        get().replaceConversation(curConversationIndex, curConversation);
       },
     }),
     {

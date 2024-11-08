@@ -1,5 +1,4 @@
-// import "../src/tailwind.css";
-
+import "../src/index.css";
 // import type { Preview } from "@storybook/react";
 
 // const preview: Preview = {
@@ -40,5 +39,4 @@ export const decorators = [
     <ColorSchemeWrapper>{renderStory()}</ColorSchemeWrapper>
   ),
   (renderStory: any) => <MantineProvider>{renderStory()}</MantineProvider>,
-  
 ];
