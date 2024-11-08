@@ -1,4 +1,5 @@
-import { Paper } from "@mantine/core";
+import { Flex, Paper } from "@mantine/core";
+import PageHomeConversationList from "../PageHomeConversationList";
 import PageHomeSidebarHeader from "./header";
 
 export default function PageHomeSidebar() {
@@ -8,10 +9,15 @@ export default function PageHomeSidebar() {
       radius={"xs"}
       withBorder
       shadow="md"
-      mih={"100vh"}
-      p={".6rem"}
+      mah={"100vh"}
+      p={".2rem"}
     >
-      <PageHomeSidebarHeader />
+      <Flex direction={`column`}>
+        <PageHomeSidebarHeader />
+
+        {/* Item list */}
+        <PageHomeConversationList />
+      </Flex>
     </Paper>
   );
 }

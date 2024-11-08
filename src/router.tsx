@@ -1,16 +1,13 @@
 import React, { Suspense } from "react";
-import { createHashRouter } from "react-router-dom";
+import { createBrowserRouter } from "react-router-dom";
 import HomeRouter from "./pages/home/router";
 import AppErrorElement from "./shared/components/AppErrorElement";
 import AppLayoutSkeleton from "./shared/components/AppLayout/skeleton";
+import SettingsRoutes from "./pages/settings/router";
 
 const AppLayout = React.lazy(() => import("@/shared/components/AppLayout"));
 
-const RouterPath = {
-  Index: `/`,
-};
-
-const Router = createHashRouter([
+const Router = createBrowserRouter([
   {
     path: "/",
     element: (
@@ -18,13 +15,9 @@ const Router = createHashRouter([
         <AppLayout />
       </Suspense>
     ),
-    children: [...HomeRouter],
+    children: [...HomeRouter, ...SettingsRoutes],
     errorElement: <AppErrorElement />,
   },
 ]);
 
-/** Declare a main router */
-export default {
-  RouterPath,
-  Router,
-};
+export default Router;

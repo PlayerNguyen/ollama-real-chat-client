@@ -31,11 +31,13 @@ type AppLayoutSidebarButtonProps = {
 
 function AppLayoutSidebarButton({ item, active }: AppLayoutSidebarButtonProps) {
   const navigate = useNavigate();
+  const { pathname } = useLocation();
   function handleClick() {
     startTransition(() => {
       navigate(item.key);
     });
   }
+
   return (
     <Tooltip
       position="right"
