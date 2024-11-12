@@ -33,7 +33,8 @@ export default function PageHomeConversationAction() {
   } = useConversation();
   const { createChatCompletion } = useOllamaRequest();
   const { tick } = useResolver<RealChat.OllamaResponse>();
-  const { isStreaming, stopStreaming, startStreaming } = useLockStreaming();
+  const { isStreaming, stopStreaming, startStreaming, setCurrentMessageId } =
+    useLockStreaming();
   const { setPreviousModel } = useAppSettings();
   const form = useForm<PageHomeConversationActionFormProps>({
     initialValues: {
@@ -92,19 +93,22 @@ export default function PageHomeConversationAction() {
 
     // generate an assistant's chat connection and
     try {
-      const chat = await createChatCompletion(conversation);
       const botMessageId = generateRandomText(16);
-
-      if (chat.status !== 200)
-        throw new Error(
-          `Unable to send request to server. Message: ${chat.statusText}.`
-        );
-
       conversation = addMessageToConversation(conversationId!, {
         content: "",
         id: botMessageId,
         role: "assistant",
       });
+
+      // Set the message id for blinking effect
+      setCurrentMessageId(botMessageId);
+
+      const chat = await createChatCompletion(conversation);
+
+      if (chat.status !== 200)
+        throw new Error(
+          `Unable to send request to server. Message: ${chat.statusText}.`
+        );
 
       StreamUtil.addChunkingEvent(chat.body!, {
         /**
@@ -129,7 +133,10 @@ export default function PageHomeConversationAction() {
             }));
           });
         },
-        onFinish: () => stopStreaming(),
+        onFinish: () => {
+          stopStreaming();
+          setCurrentMessageId(undefined);
+        },
         onInit: () => {
           // Signal that the application is streaming
           startStreaming();
