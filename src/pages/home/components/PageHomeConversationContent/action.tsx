@@ -11,8 +11,10 @@ import { ActionIcon, Flex, Pill, ScrollArea, Textarea } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { IconCamera, IconSend2 } from "@tabler/icons-react";
 import clsx from "clsx";
+import { useRef } from "react";
 import toast from "react-hot-toast";
 import { useParams } from "react-router-dom";
+import useShiftKeyDown from "../../hooks/store/input/useShiftKeydown";
 
 export type PageHomeConversationActionFormProps = {
   promptMessage: string;
@@ -33,11 +35,17 @@ export default function PageHomeConversationAction() {
   const { tick } = useResolver<RealChat.OllamaResponse>();
   const { isStreaming, stopStreaming, startStreaming } = useLockStreaming();
   const { setPreviousModel } = useAppSettings();
-
   const form = useForm<PageHomeConversationActionFormProps>({
     initialValues: {
       promptMessage: "",
       model: "",
+    },
+  });
+  const submitButtonRef = useRef<HTMLButtonElement>(null);
+  const { ref: textareaInputRef } = useShiftKeyDown({
+    keyValue: "Enter",
+    callback: () => {
+      submitButtonRef.current!.click();
     },
   });
 
@@ -140,7 +148,9 @@ export default function PageHomeConversationAction() {
     conversationId!
   );
 
-  console.log(currentModelOfThisConversation);
+  function handleKeyDown(ev: KeyboardEvent) {
+    console.log(ev.key);
+  }
 
   return (
     <form onSubmit={form.onSubmit(handleSubmitMessage)}>
@@ -172,10 +182,15 @@ export default function PageHomeConversationAction() {
               autosize
               minRows={4}
               maxRows={5}
+              ref={textareaInputRef}
               {...form.getInputProps("promptMessage")}
             />
           </Flex>
-          <ActionIcon type="submit" disabled={isStreaming}>
+          <ActionIcon
+            type="submit"
+            disabled={isStreaming}
+            ref={submitButtonRef}
+          >
             <IconSend2 size={16} className="-rotate-45" />
           </ActionIcon>
         </Flex>
