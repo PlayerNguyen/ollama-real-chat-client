@@ -48,11 +48,11 @@ export default function ConversationBubble({
             className={clsx("rounded-xl")}
           >
             {icon && icon}
-            <Text fw={600} lineClamp={2} size="xs" c={"gray.7"}>
-              <Skeleton visible={isLoading}>
+            <Skeleton visible={isLoading}>
+              <Text fw={600} lineClamp={2} size="xs" c={"gray.7"}>
                 {title || "Conversation Bubble"}
-              </Skeleton>
-            </Text>
+              </Text>
+            </Skeleton>
           </Flex>
           {/* Divider */}
           <Divider my={"sm"} w={"100%"} />
