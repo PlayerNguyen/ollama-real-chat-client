@@ -1,5 +1,5 @@
 import type { RealChat } from "@/types";
-import { Flex, Skeleton, Text, Title } from "@mantine/core";
+import { Flex, Text, Title } from "@mantine/core";
 import clsx from "clsx";
 
 export type PageHomeConversationContentHeaderProps = {
@@ -21,8 +21,12 @@ export default function PageHomeConversationContentHeader({
       <Text size="xs" c={"gray.6"} fw={600}>
         {(conversation && conversation.id) || "undefined"}
       </Text>
-      <Title order={5}>
-        {(conversation && conversation.summary) || <Skeleton h={20} w={128} />}
+      <Title
+        order={5}
+        className={clsx(`select-none`)}
+        c={conversation && conversation.summary ? "gray.4" : "gray.8"}
+      >
+        {(conversation && conversation.summary) || "Untitled conversation"}
       </Title>
     </Flex>
   );

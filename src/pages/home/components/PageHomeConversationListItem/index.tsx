@@ -32,8 +32,13 @@ export default function PageHomeConversationListItem({
       {...props}
     >
       <Flex direction={`column`} gap={""}>
-        <Text size="sm" fw={"500"} lineClamp={2}>
-          {conversation ? conversation.summary : `Untitled conversation`}
+        <Text
+          size="sm"
+          fw={"500"}
+          lineClamp={2}
+          c={conversation && conversation.summary ? "gray.8" : "gray.6"}
+        >
+          {(conversation && conversation.summary) || `Untitled conversation`}
         </Text>
         <Flex gap={"md"}>
           <Text size="xs" fw={"300"} c={"gray.5"}>
