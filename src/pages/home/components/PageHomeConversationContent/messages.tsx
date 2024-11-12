@@ -6,6 +6,14 @@ import clsx from "clsx";
 import { marked } from "marked";
 import { useEffect, useRef, useState } from "react";
 
+/**
+ * In pixels, the global scroll offset from bottom
+ * define the maximum size that user is scrolling from the
+ * scrollTop to (scrollHeight - view offset).
+ *
+ */
+const GLOBAL_SCROLL_OFFSET_FROM_BOTTOM = 130;
+
 export type PageHomeConversationContentMessagesProps = {
   conversation?: RealChat.Conversation;
 };
@@ -60,7 +68,7 @@ export default function PageHomeConversationContentMessages({
       setScrollLock(
         Math.abs(
           element.scrollTop - (element.scrollHeight - element.offsetHeight)
-        ) <= 0
+        ) <= GLOBAL_SCROLL_OFFSET_FROM_BOTTOM
       );
     };
     if (containerElement !== null) {
