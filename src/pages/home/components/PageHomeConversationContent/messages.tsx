@@ -106,7 +106,7 @@ export default function PageHomeConversationContentMessages({
                 key={message.id}
                 isLoading={false}
                 content={<>{message.content}</>}
-                width="200px"
+                width="70%"
               />
             );
           }
