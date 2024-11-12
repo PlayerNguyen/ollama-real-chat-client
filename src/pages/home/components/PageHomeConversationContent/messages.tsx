@@ -1,8 +1,10 @@
 import ConversationBubble from "@/shared/components/ConversationBubble";
+import useLockStreaming from "@/shared/hooks/store/useLockStreaming";
 import type { RealChat } from "@/types";
 import { Center, Flex, Text } from "@mantine/core";
 import { IconRobotFace, IconUser } from "@tabler/icons-react";
 import clsx from "clsx";
+import htmlParser from "html-react-parser";
 import { marked } from "marked";
 import { useEffect, useRef, useState } from "react";
 
@@ -25,7 +27,7 @@ export default function PageHomeConversationContentMessages({
   const [lastConversation, setLastConversation] = useState<string | undefined>(
     undefined
   );
-
+  const { currentMessageId } = useLockStreaming();
   const [isScrollLock, setScrollLock] = useState<boolean>(false);
 
   useEffect(() => {
@@ -120,12 +122,28 @@ export default function PageHomeConversationContentMessages({
               isLoading={false}
               key={message.id}
               content={
-                <div
-                  className={clsx(`prose`)}
-                  dangerouslySetInnerHTML={{
-                    __html: marked.parse(message.content),
-                  }}
-                ></div>
+                <>
+                  <div className={clsx(`prose`)}>
+                    {htmlParser(
+                      marked.parse(message.content, { async: false }),
+                      {
+                        // Modify each <p> element during parsing
+                        replace: (domNode: any) => {
+                          if (domNode.name === "p") {
+                            return (
+                              <p className="custom-class">
+                                {domNode.children[0].data}
+                              </p>
+                            );
+                          }
+                        },
+                      }
+                    )}
+                  </div>
+                  {currentMessageId === message.id && (
+                    <ConversationBubble.Cursor />
+                  )}
+                </>
               }
             />
           );

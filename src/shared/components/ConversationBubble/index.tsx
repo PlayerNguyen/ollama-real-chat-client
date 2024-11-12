@@ -69,3 +69,14 @@ export default function ConversationBubble({
     </Flex>
   );
 }
+
+ConversationBubble.Cursor = () => {
+  return (
+    <div
+      className={clsx(
+        `w-[12px] h-[12px] bg-[var(--mantine-color-gray-5)] inline-block animate-blink`,
+        `rounded-full my-4`
+      )}
+    ></div>
+  );
+};
