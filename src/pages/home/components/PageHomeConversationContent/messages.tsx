@@ -4,7 +4,7 @@ import { Center, Flex, Text } from "@mantine/core";
 import { IconRobotFace, IconUser } from "@tabler/icons-react";
 import clsx from "clsx";
 import { marked } from "marked";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export type PageHomeConversationContentMessagesProps = {
   conversation?: RealChat.Conversation;
@@ -14,23 +14,65 @@ export default function PageHomeConversationContentMessages({
   conversation,
 }: PageHomeConversationContentMessagesProps) {
   const containerRef = useRef<HTMLDivElement>(null);
+  const [lastConversation, setLastConversation] = useState<string | undefined>(
+    undefined
+  );
+
+  const [isScrollLock, setScrollLock] = useState<boolean>(false);
 
   useEffect(() => {
     /**
-     * Scroll to the bottom
-     * if remain bottom
+     * This one register on the first jump, start at the bottom of the scroll
      */
-    console.log(`scroll to bottom`);
-    if (containerRef.current !== null) {
-      /**
-       * Scroll as init
-       */
+    const containerElement = containerRef.current;
+    if (
+      containerElement !== null &&
+      conversation &&
+      lastConversation !== conversation.id
+    ) {
+      containerElement.scroll({
+        behavior: "instant",
+        top: containerElement.scrollHeight,
+      });
+      setLastConversation(conversation.id);
+    }
+
+    // If the last conversation is the same, scroll smoothly
+    if (
+      containerRef.current !== null &&
+      conversation &&
+      lastConversation === conversation.id &&
+      isScrollLock
+    ) {
       containerRef.current.scroll({
         top: containerRef.current.scrollHeight,
         behavior: "smooth",
       });
     }
-  }, [conversation, containerRef]);
+  }, [containerRef, conversation, lastConversation, isScrollLock]);
+
+  useEffect(() => {
+    const containerElement = containerRef.current;
+    const scrollListener = (ev: Event) => {
+      const element = ev.target as HTMLDivElement;
+
+      // if is down to the bottom, set locking state.
+      setScrollLock(
+        Math.abs(
+          element.scrollTop - (element.scrollHeight - element.offsetHeight)
+        ) <= 0
+      );
+    };
+    if (containerElement !== null) {
+      containerElement.addEventListener("scroll", scrollListener);
+    }
+
+    return () => {
+      if (containerElement !== null) {
+        containerElement.removeEventListener("scroll", scrollListener);
+      }
+    };
+  }, [containerRef]);
 
   return (
     <Flex
@@ -68,6 +110,7 @@ export default function PageHomeConversationContentMessages({
                 <IconRobotFace size={18} direction={"start"} key={message.id} />
               }
               isLoading={false}
+              key={message.id}
               content={
                 <div
                   className={clsx(`prose`)}
