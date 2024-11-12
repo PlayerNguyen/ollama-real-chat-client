@@ -24,7 +24,7 @@ export default function PageHomeConversationContentHeader({
       <Title
         order={5}
         className={clsx(`select-none`)}
-        c={conversation && conversation.summary ? "gray.4" : "gray.8"}
+        c={conversation && conversation.summary ? "gray.8" : "gray.4"}
       >
         {(conversation && conversation.summary) || "Untitled conversation"}
       </Title>
