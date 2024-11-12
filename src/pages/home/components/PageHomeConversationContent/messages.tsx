@@ -123,7 +123,7 @@ export default function PageHomeConversationContentMessages({
               key={message.id}
               content={
                 <>
-                  <div className={clsx(`prose`)}>
+                  <div className={clsx(`prose max-w-none w-full text-justify`)}>
                     {htmlParser(
                       marked.parse(message.content, { async: false }),
                       {
