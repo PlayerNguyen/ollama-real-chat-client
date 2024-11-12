@@ -7,7 +7,7 @@ import useLockStreaming from "@/shared/hooks/store/useLockStreaming";
 import StreamUtil from "@/shared/util/StreamUtil";
 import { generateRandomText } from "@/shared/util/TextUtil";
 import type { RealChat } from "@/types";
-import { ActionIcon, Flex, Pill, ScrollArea, TextInput } from "@mantine/core";
+import { ActionIcon, Flex, Pill, ScrollArea, Textarea } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { IconCamera, IconSend2 } from "@tabler/icons-react";
 import clsx from "clsx";
@@ -75,10 +75,11 @@ export default function PageHomeConversationAction() {
       role: "user",
     };
     conversation = addMessageToConversation(conversationId, message);
-    // update title
+
+    // Update the conversation title, if not exists
     updateConversation(conversationId, (conversation) => ({
       ...conversation,
-      summary: message.content,
+      summary: conversation.summary || message.content,
     }));
 
     // generate an assistant's chat connection and
@@ -104,17 +105,21 @@ export default function PageHomeConversationAction() {
          */
         onChunk: async (chunk) => {
           const streamResponseObject = await tick(chunk!);
-          const message = streamResponseObject.message;
+          const messages = streamResponseObject.map(
+            (response) => response.message
+          );
 
-          if (message === undefined) {
-            throw new Error(`Cannot read the message`);
+          if (messages === undefined) {
+            throw new Error(`Cannot read messages`);
           }
-          const messageContentFromResponse = message.content;
 
-          updateMessage(conversationId, botMessageId, (message) => ({
-            ...message,
-            content: message.content + messageContentFromResponse,
-          }));
+          // Append to the current message
+          messages.forEach((_message) => {
+            updateMessage(conversationId, botMessageId, (message) => ({
+              ...message,
+              content: message.content + _message.content,
+            }));
+          });
         },
         onFinish: () => stopStreaming(),
         onInit: () => {
@@ -156,17 +161,20 @@ export default function PageHomeConversationAction() {
             <Pill variant="contrast">What is Newton's Law?</Pill>
           </ScrollArea>
         </Flex>
-        <Flex gap={"md"}>
+        <Flex gap={"md"} className={clsx(`flex-1`)}>
           <ActionIcon>
             <IconCamera size={16} />
           </ActionIcon>
-          <>
-            <TextInput
-              multiple={true}
-              className="flex-1"
+          <Flex className={clsx(`flex-1`)} direction={`column`}>
+            <Textarea
+              className={clsx(`flex-1`)}
+              wrapperProps={{ c: "red.5" }}
+              autosize
+              minRows={4}
+              maxRows={5}
               {...form.getInputProps("promptMessage")}
             />
-          </>
+          </Flex>
           <ActionIcon type="submit" disabled={isStreaming}>
             <IconSend2 size={16} className="-rotate-45" />
           </ActionIcon>
