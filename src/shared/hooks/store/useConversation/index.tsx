@@ -11,6 +11,9 @@ export type UseStoreConventionType = {
 
   addConversation: (conversation: RealChat.Conversation) => void;
   removeConversation: (index: number) => void;
+  /**
+   * @deprecated use updateConversation
+   */
   replaceConversation: (
     index: number,
     conversation: RealChat.Conversation
@@ -33,6 +36,11 @@ export type UseStoreConventionType = {
      * The reducer which will replace the message by a new one.
      */
     reducer?: (message: RealChat.Message) => RealChat.Message
+  ) => void;
+
+  updateConversation: (
+    conversationId: string,
+    reducer?: (conversation: RealChat.Conversation) => RealChat.Conversation
   ) => void;
 };
 
@@ -76,6 +84,28 @@ const useConversation = create<UseStoreConventionType>()(
           conversation,
           ...currentConversations.slice(index + 1),
         ];
+
+        // Update back the state
+        set((cur) => ({ ...cur, conversations: updatedConversations }));
+      },
+
+      updateConversation(id: string, reducer) {
+        const currentConversations = get().conversations;
+        const index = currentConversations.findIndex(
+          (conversation) => conversation.id === id
+        );
+        if (index === -1) return;
+
+        const updatedConversations = reducer
+          ? [
+              ...currentConversations.slice(0, index),
+              reducer(currentConversations[index]),
+              ...currentConversations.slice(index + 1),
+            ]
+          : [
+              ...currentConversations.slice(0, index),
+              ...currentConversations.slice(index + 1),
+            ];
 
         // Update back the state
         set((cur) => ({ ...cur, conversations: updatedConversations }));

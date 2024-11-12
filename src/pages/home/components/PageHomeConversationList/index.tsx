@@ -18,7 +18,7 @@ export default function PageHomeConversationList() {
 
   return (
     <Flex
-      className="conversation-list-outer overflow-y-scroll p-4 min-h-[90vh]"
+      className="conversation-list-outer overflow-y-auto p-4 flex-1"
       direction={`column`}
       gap={"xs"}
     >
@@ -28,6 +28,7 @@ export default function PageHomeConversationList() {
             key={conversation.id}
             isActive={conversation.id === id}
             onClick={() => handleItemClick(conversation.id)}
+            conversation={conversation}
           />
         );
       })}

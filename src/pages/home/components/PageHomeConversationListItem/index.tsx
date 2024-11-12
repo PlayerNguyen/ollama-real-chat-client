@@ -1,3 +1,4 @@
+import type { RealChat } from "@/types";
 import {
   Flex,
   Text,
@@ -5,14 +6,17 @@ import {
   type UnstyledButtonProps,
 } from "@mantine/core";
 import clsx from "clsx";
+import dayjs from "dayjs";
 
 export type PageHomeConversationListItemProps = UnstyledButtonProps & {
   isActive?: boolean;
   onClick: () => void;
+  conversation?: RealChat.Conversation;
 };
 
 export default function PageHomeConversationListItem({
   isActive,
+  conversation,
   ...props
 }: PageHomeConversationListItemProps) {
   return (
@@ -29,11 +33,11 @@ export default function PageHomeConversationListItem({
     >
       <Flex direction={`column`} gap={""}>
         <Text size="sm" fw={"500"} lineClamp={2}>
-          Untitled conversation with a longer title and more more more
+          {conversation ? conversation.summary : `Untitled conversation`}
         </Text>
         <Flex gap={"md"}>
           <Text size="xs" fw={"300"} c={"gray.5"}>
-            2h
+            {conversation && dayjs(conversation.createdAt).fromNow(true)}
           </Text>
           <Text size="xs" fw={"300"} c={"gray.5"}>
             Model

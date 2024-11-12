@@ -1,4 +1,5 @@
 import RouterPaths from "@/router-paths";
+import useAppSettings from "@/shared/hooks/store/useAppSettings";
 import { useConversation } from "@/shared/hooks/store/useConversation";
 import { generateRandomText } from "@/shared/util/TextUtil";
 import type { RealChat } from "@/types";
@@ -15,6 +16,7 @@ export default function PageHomeSidebarHeader({
   title,
 }: PageHomeSidebarHeaderProps) {
   const { addConversation } = useConversation();
+  const { previousModel } = useAppSettings();
   const navigate = useNavigate();
 
   function handleCreateConversationClick() {
@@ -22,6 +24,7 @@ export default function PageHomeSidebarHeader({
       createdAt: new Date(),
       id: generateRandomText(),
       messages: [],
+      model: previousModel,
     };
 
     addConversation(conversationObject);

@@ -32,7 +32,8 @@ export default function ConversationBubble({
         withBorder
         shadow="sm"
         w={width === undefined || width === "" ? "100%" : width}
-        p={"md"}
+        py="md"
+        px={"xl"}
         radius={"xl"}
         {...props}
       >

@@ -4,9 +4,11 @@ import { persist } from "zustand/middleware";
 export type UseAppSettingsType = {
   lastPath?: string;
   ollamaBaseUrl?: string;
+  previousModel: string | undefined;
 
   setLastPath: (lastPath: string) => void;
   setOllamaBaseUrl: (baseUrl: string) => void;
+  setPreviousModel: (previousModel: string) => void;
 };
 
 const useAppSettings = create<UseAppSettingsType>()(
@@ -14,6 +16,7 @@ const useAppSettings = create<UseAppSettingsType>()(
     (set, get) => ({
       lastPath: "/conversations",
       ollamaBaseUrl: "http://localhost:11434",
+      previousModel: undefined,
 
       setLastPath(lastPath) {
         set((c) => ({
@@ -26,6 +29,15 @@ const useAppSettings = create<UseAppSettingsType>()(
         set((c) => ({
           ...c,
           ollamaBaseUrl: baseUrl,
+        }));
+      },
+
+      setPreviousModel(previousModel) {
+        console.log(`Set the previous model to: ${previousModel}`);
+
+        set((c) => ({
+          ...c,
+          previousModel: previousModel,
         }));
       },
     }),

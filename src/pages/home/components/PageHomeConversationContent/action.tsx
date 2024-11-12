@@ -1,6 +1,7 @@
 import ButtonModelSelect from "@/shared/components/ButtonSelectModel";
 import useOllamaRequest from "@/shared/hooks/request/useOllamaRequest";
 import useResolver from "@/shared/hooks/resolver/useResolver";
+import useAppSettings from "@/shared/hooks/store/useAppSettings";
 import { useConversation } from "@/shared/hooks/store/useConversation";
 import useLockStreaming from "@/shared/hooks/store/useLockStreaming";
 import StreamUtil from "@/shared/util/StreamUtil";
@@ -26,10 +27,12 @@ export default function PageHomeConversationAction() {
     getModel,
     updateMessage,
     searchConversation,
+    updateConversation,
   } = useConversation();
   const { createChatCompletion } = useOllamaRequest();
   const { tick } = useResolver<RealChat.OllamaResponse>();
   const { isStreaming, stopStreaming, startStreaming } = useLockStreaming();
+  const { setPreviousModel } = useAppSettings();
 
   const form = useForm<PageHomeConversationActionFormProps>({
     initialValues: {
@@ -44,6 +47,7 @@ export default function PageHomeConversationAction() {
     );
 
     setModel(conversationId!, model!);
+    setPreviousModel(model!);
   };
 
   async function handleSubmitMessage(
@@ -71,6 +75,11 @@ export default function PageHomeConversationAction() {
       role: "user",
     };
     conversation = addMessageToConversation(conversationId, message);
+    // update title
+    updateConversation(conversationId, (conversation) => ({
+      ...conversation,
+      summary: message.content,
+    }));
 
     // generate an assistant's chat connection and
     try {

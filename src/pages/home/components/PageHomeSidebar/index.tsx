@@ -11,8 +11,9 @@ export default function PageHomeSidebar() {
       shadow="md"
       mah={"100vh"}
       p={".2rem"}
+      className="page-home-sidebar-wrapper"
     >
-      <Flex direction={`column`}>
+      <Flex direction={`column`} mah={"100vh"}>
         <PageHomeSidebarHeader />
 
         {/* Item list */}

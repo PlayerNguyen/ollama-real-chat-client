@@ -30,9 +30,9 @@ export default function ButtonModelSelect({
         </>
       }
       fw={400}
-      variant="filled"
       data={[{ group: "Ollama", items: [...formattedData] }]}
-      w={120}
+      w={180}
+      allowDeselect={false}
       searchable
       radius={"xl"}
       size="xs"
