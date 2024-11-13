@@ -6,14 +6,20 @@ import { useNavigate, useParams } from "react-router-dom";
 import PageHomeConversationListItem from "../PageHomeConversationListItem";
 
 export default function PageHomeConversationList() {
-  const { conversations } = useConversation();
+  const { conversations, updateConversation } = useConversation();
   const navigate = useNavigate();
   const { id } = useParams();
 
-  function handleItemClick(id: string) {
+  function handleOpenConversation(id: string) {
     startTransition(() => {
       navigate(RouterPaths.Conversations.View.replace(`:id`, `${id}`));
     });
+  }
+
+  function handleRemoveConversation() {
+    // Delete the conversation (if the reducer parameter has not passed)
+    alert("hi");
+    // updateConversation(id!);
   }
 
   return (
@@ -27,8 +33,9 @@ export default function PageHomeConversationList() {
           <PageHomeConversationListItem
             key={conversation.id}
             isActive={conversation.id === id}
-            onClick={() => handleItemClick(conversation.id)}
+            onClick={() => handleOpenConversation(conversation.id)}
             conversation={conversation}
+            onRemove={() => handleRemoveConversation}
           />
         );
       })}

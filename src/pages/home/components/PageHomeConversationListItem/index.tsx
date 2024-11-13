@@ -1,53 +1,71 @@
 import type { RealChat } from "@/types";
 import {
+  ActionIcon,
   Flex,
   Text,
   UnstyledButton,
   type UnstyledButtonProps,
 } from "@mantine/core";
+import { IconX } from "@tabler/icons-react";
 import clsx from "clsx";
 import dayjs from "dayjs";
 
 export type PageHomeConversationListItemProps = UnstyledButtonProps & {
   isActive?: boolean;
   onClick: () => void;
+  onRemove: () => void;
   conversation?: RealChat.Conversation;
 };
 
 export default function PageHomeConversationListItem({
   isActive,
   conversation,
+  onRemove,
   ...props
 }: PageHomeConversationListItemProps) {
   return (
     <UnstyledButton
       className={clsx(
         `border-0 border-b-2 border-[var(--mantine-color-gray-4)]`,
-        `hover:bg-[var(--mantine-color-gray-1)] focus:bg-[var(--mantine-color-gray-1)]`,
+        `hover:bg-[var(--mantine-color-gray-1)] `,
         `focus:outline-[var(--mantine-color-black)]`,
-        `rounded-xl`,
-        { "bg-[var(--mantine-color-gray-2)]": isActive }
+        `rounded-xl transition-colors ease-in-out`,
+        { "bg-[var(--mantine-color-gray-2)]": isActive },
+        `group`
       )}
       p={"md"}
       {...props}
     >
-      <Flex direction={`column`} gap={""}>
-        <Text
-          size="sm"
-          fw={"500"}
-          lineClamp={2}
-          c={conversation && conversation.summary ? "gray.8" : "gray.6"}
-        >
-          {(conversation && conversation.summary) || `Untitled conversation`}
-        </Text>
-        <Flex gap={"md"}>
-          <Text size="xs" fw={"300"} c={"gray.5"}>
-            {conversation && dayjs(conversation.createdAt).fromNow(true)}
+      <Flex align={`center`} gap={"xs"}>
+        <Flex direction={`column`} gap={"xs"} className={clsx(`flex-1`)}>
+          <Text
+            size="md"
+            fw={"500"}
+            lineClamp={2}
+            className={clsx(`leading-normal`)}
+            c={conversation && conversation.summary ? "gray.8" : "gray.6"}
+          >
+            {(conversation && conversation.summary) || `Untitled conversation`}
           </Text>
-          <Text size="xs" fw={"300"} c={"gray.5"}>
-            Model
-          </Text>
+          <div>
+            <Text size="xs" fw={"400"} c={"gray.5"}>
+              {conversation && dayjs(conversation.createdAt).fromNow(true)}
+            </Text>
+            <Text size="xs" fw={"400"} c={"gray.5"}>
+              {(conversation && conversation.model) || "Unknown model"}
+            </Text>
+          </div>
         </Flex>
+        <ActionIcon
+          onClick={onRemove}
+          variant="subtle"
+          className={clsx(
+            `text-transparent group-hover:text-[var(--mantine-color-gray-6)] hover:bg-[var(--mantine-color-gray-3)]`,
+            `transition-colors ease-in-out duration-200`
+          )}
+        >
+          <IconX />
+        </ActionIcon>
       </Flex>
     </UnstyledButton>
   );
