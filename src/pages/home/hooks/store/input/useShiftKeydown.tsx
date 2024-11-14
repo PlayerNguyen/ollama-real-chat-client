@@ -13,8 +13,8 @@ export default function useShiftKeyDown({
     if (evt.key === keyValue && evt.shiftKey) {
       if (evt.type == "keydown") {
         callback(evt);
-        evt.preventDefault();
       }
+      evt.preventDefault();
     }
   }
 

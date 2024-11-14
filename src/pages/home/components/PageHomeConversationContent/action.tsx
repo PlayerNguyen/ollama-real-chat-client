@@ -14,6 +14,7 @@ import clsx from "clsx";
 import { useRef } from "react";
 import toast from "react-hot-toast";
 import { useParams } from "react-router-dom";
+import useKeyEvent from "../../hooks/store/input/useKeyEvent";
 import useShiftKeyDown from "../../hooks/store/input/useShiftKeydown";
 
 export type PageHomeConversationActionFormProps = {
@@ -43,12 +44,22 @@ export default function PageHomeConversationAction() {
     },
   });
   const submitButtonRef = useRef<HTMLButtonElement>(null);
-  const { ref: textareaInputRef } = useShiftKeyDown({
+  const { ref: __innerRef } = useShiftKeyDown({
     keyValue: "Enter",
     callback: () => {
-      submitButtonRef.current!.click();
+      form.setFieldValue("promptMessage", (prev) => prev + "\n");
     },
   });
+
+  const textareaInputRef = useKeyEvent(
+    "keydown",
+    "Enter",
+    (ev) => {
+      submitButtonRef.current!.click();
+      ev.preventDefault();
+    },
+    __innerRef
+  );
 
   const handleChangeModel = (model: string | null) => {
     console.log(
@@ -187,8 +198,8 @@ export default function PageHomeConversationAction() {
               className={clsx(`flex-1`)}
               wrapperProps={{ c: "red.5" }}
               autosize
-              minRows={4}
-              maxRows={5}
+              minRows={1}
+              maxRows={3}
               ref={textareaInputRef}
               {...form.getInputProps("promptMessage")}
             />

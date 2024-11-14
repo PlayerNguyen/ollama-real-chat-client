@@ -14,7 +14,7 @@ import { useEffect, useRef, useState } from "react";
  * scrollTop to (scrollHeight - view offset).
  *
  */
-const GLOBAL_SCROLL_OFFSET_FROM_BOTTOM = 130;
+const GLOBAL_SCROLL_OFFSET_FROM_BOTTOM = 40;
 
 export type PageHomeConversationContentMessagesProps = {
   conversation?: RealChat.Conversation;
