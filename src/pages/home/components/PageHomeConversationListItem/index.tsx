@@ -25,11 +25,14 @@ export default function PageHomeConversationListItem({
 }: PageHomeConversationListItemProps) {
   return (
     <UnstyledButton
+      component="div"
+      tabIndex={0}
+      role="button"
       className={clsx(
         `border-0 border-b-2 border-[var(--mantine-color-gray-4)]`,
         `hover:bg-[var(--mantine-color-gray-1)] `,
         `focus:outline-[var(--mantine-color-black)]`,
-        `rounded-xl transition-colors ease-in-out`,
+        `rounded-xl transition-colors ease-in-out select-none`,
         { "bg-[var(--mantine-color-gray-2)]": isActive },
         `group`
       )}

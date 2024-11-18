@@ -162,9 +162,10 @@ export default function PageHomeConversationAction() {
     }
   }
 
-  const currentModelOfThisConversation: string | undefined = getModel(
-    conversationId!
-  );
+  const currentModelOfThisConversation: string | undefined =
+    searchConversation(conversationId!) === undefined
+      ? ""
+      : getModel(conversationId!);
 
   function handleKeyDown(ev: KeyboardEvent) {
     console.log(ev.key);
