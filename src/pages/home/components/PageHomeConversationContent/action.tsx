@@ -176,8 +176,9 @@ export default function PageHomeConversationAction() {
       <Flex
         gap={6}
         direction={"column"}
-        className={clsx(`h-[20vh] overflow-hidden p-4`)}
+        className={clsx(` overflow-hidden p-4`)}
         bg={"gray.1"}
+        justify={"end"}
       >
         <Flex>
           <ButtonModelSelect
