@@ -206,7 +206,7 @@ export default function PageHomeConversationAction() {
           </Flex>
           <ActionIcon
             type="submit"
-            disabled={isStreaming}
+            disabled={isStreaming || form.getValues()["promptMessage"] === ""}
             ref={submitButtonRef}
           >
             <IconSend2 size={16} className="-rotate-45" />
