@@ -43,8 +43,8 @@ export default function PageHomeSidebarHeader({
       {/* Actions */}
       <Flex w={"100vw"} justify={"end"} gap={6}>
         {/* <Kbd>N</Kbd> */}
-        <ActionIcon size={"md"}>
-          <IconBubblePlus size={16} onClick={handleCreateConversationClick} />
+        <ActionIcon size={"md"} onClick={handleCreateConversationClick}>
+          <IconBubblePlus size={16} />
         </ActionIcon>
       </Flex>
     </Flex>
